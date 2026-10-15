@@ -27,7 +27,11 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "clave-solo-para-desarrollo-loc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "sistema-finanzas-publicacion.onrender.com",
+]
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/inicio/'

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Consulta financiera</title>
+
+
+<style>
+    /* =========================================================
+       CONFIGURACIÓN GENERAL
+       ========================================================= */
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7f9;
+        color: #172033;
+    }
+
+
+    /* =========================================================
+       BARRA SUPERIOR
+       ========================================================= */
+
+/* =====================================================
+   BARRA SUPERIOR
+   ===================================================== */
+
+.barra {
+    min-height: 72px;
+    background: white;
+    border-bottom: 1px solid #e1e6eb;
+
+    display: flex;
+    align-items: center;
+
+    /* Todo el contenido comienza desde la izquierda */
+    justify-content: flex-start;
+
+    padding: 0 30px;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    gap: 28px;
+}
+
+
+    /* =========================================================
+       LOGO Y NOMBRE
+       ========================================================= */
+
+    .marca {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        flex-shrink: 0;
+        text-decoration: none;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #168653;
+        color: #ffffff;
+
+        border-radius: 9px;
+
+        font-size: 20px;
+        font-weight: 700;
+
+        flex-shrink: 0;
+    }
+
+    .nombre-sistema {
+        color: #08783f;
+        font-size: 18px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       NAVEGACIÓN
+       ========================================================= */
+
+.navegacion {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+
+    margin-left: 28px;
+    width: auto;
+    order: 0;
+    flex-wrap: nowrap;
+}
+
+    .navegacion a {
+        color: #172033;
+        text-decoration: none;
+
+        font-size: 14px;
+        font-weight: 400;
+
+        white-space: nowrap;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+    .navegacion a:hover {
+        color: #168653;
+    }
+
+    .navegacion a.activo {
+        color: #168653;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+       CORREO DEL USUARIO
+       ========================================================= */
+
+    .correo {
+        color: #64748b;
+        font-size: 13px;
+        white-space: nowrap;
+        text-align: right;
+        margin-left: 4px;
+    }
+
+
+    /* =========================================================
+       CONTENEDOR PRINCIPAL
+       ========================================================= */
+
+    .contenedor {
+        width: 100%;
+        max-width: 900px;
+
+        margin: 0 auto;
+
+        padding: 40px 22px 60px;
+    }
+
+
+    /* =========================================================
+       ENCABEZADO
+       ========================================================= */
+
+    .encabezado {
+        margin-bottom: 28px;
+    }
+
+    .encabezado h1 {
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.2;
+
+        margin-bottom: 8px;
+    }
+
+    .encabezado p {
+        color: #64748b;
+
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       RESUMEN FINANCIERO
+       ========================================================= */
+
+    .resumen {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 15px;
+
+        margin-bottom: 25px;
+    }
+
+    .resumen-card {
+        background: #ffffff;
+
+        border: 1px solid #dfe5eb;
+        border-radius: 14px;
+
+        padding: 20px;
+
+        min-width: 0;
+    }
+
+    .resumen-titulo {
+        color: #64748b;
+
+        font-size: 13px;
+
+        margin-bottom: 8px;
+    }
+
+    .resumen-monto {
+        color: #111827;
+
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .disponible {
+        color: #08783f;
+    }
+
+
+    /* =========================================================
+       PANEL PRINCIPAL
+       ========================================================= */
+
+    .panel {
+        background: #ffffff;
+
+        border: 1px solid #dfe5eb;
+        border-radius: 16px;
+
+        padding: 30px;
+
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .panel h2 {
+        color: #111827;
+
+        font-size: 21px;
+
+        margin-bottom: 8px;
+    }
+
+    .descripcion {
+        color: #64748b;
+
+        font-size: 14px;
+        line-height: 1.6;
+
+        margin-bottom: 24px;
+    }
+
+
+    /* =========================================================
+       CAMPO DE PREGUNTA
+       ========================================================= */
+
+    .campo {
+        margin-bottom: 18px;
+    }
+
+    .campo label {
+        display: block;
+
+        color: #111827;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+    .campo textarea {
+        width: 100%;
+
+        min-height: 125px;
+
+        padding: 15px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        background: #ffffff;
+        color: #172033;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+
+        resize: vertical;
+
+        outline: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .campo textarea:focus {
+        border-color: #168653;
+
+        box-shadow:
+            0 0 0 3px rgba(22, 134, 83, 0.10);
+    }
+
+    .campo textarea::placeholder {
+        color: #94a3b8;
+    }
+
+
+    /* =========================================================
+       TEXTO DE AYUDA
+       ========================================================= */
+
+    .ayuda {
+        margin-top: 8px;
+
+        color: #94a3b8;
+
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       EJEMPLOS DE CONSULTAS
+       ========================================================= */
+
+    .ejemplos {
+        margin-bottom: 20px;
+    }
+
+    .ejemplos-titulo {
+        color: #475569;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        margin-bottom: 10px;
+    }
+
+    .ejemplos-lista {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 8px;
+    }
+
+    .ejemplo {
+        display: inline-block;
+
+        background: #f1f5f9;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+
+        padding: 8px 12px;
+
+        color: #475569;
+
+        font-size: 12px;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .ejemplo:hover {
+        background: #e8f5ee;
+        border-color: #b7dfc8;
+    }
+
+
+    /* =========================================================
+       BOTÓN PRINCIPAL
+       ========================================================= */
+
+    .boton {
+        width: 100%;
+
+        border: none;
+        border-radius: 10px;
+
+        padding: 14px;
+
+        background: #168653;
+        color: #ffffff;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.2s ease,
+            transform 0.1s ease;
+    }
+
+    .boton:hover {
+        background: #0d7043;
+    }
+
+    .boton:active {
+        transform: translateY(1px);
+    }
+
+
+    /* =========================================================
+       RESULTADO
+       ========================================================= */
+
+    .resultado {
+        margin-top: 25px;
+
+        border-radius: 15px;
+
+        padding: 25px;
+
+        border: 1px solid;
+    }
+
+    .resultado.verde {
+        background: #ecfdf3;
+        border-color: #a7f3d0;
+    }
+
+    .resultado.amarillo {
+        background: #fffbeb;
+        border-color: #fde68a;
+    }
+
+    .resultado.rojo {
+        background: #fef2f2;
+        border-color: #fecaca;
+    }
+
+    .resultado.error {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+
+    /* =========================================================
+       CABECERA DEL RESULTADO
+       ========================================================= */
+
+    .resultado-cabecera {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        margin-bottom: 14px;
+    }
+
+    .resultado-icono {
+        width: 28px;
+        height: 28px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 22px;
+    }
+
+    .resultado h2 {
+        color: #111827;
+
+        font-size: 20px;
+    }
+
+    .resultado p {
+        color: #475569;
+
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+    /* =========================================================
+       BOTONES / ENLACES GENERALES
+       ========================================================= */
+
+    a {
+        color: inherit;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE - TABLET
+       ========================================================= */
+
+    @media (max-width: 1000px) {
+
+        .barra {
+            padding: 0 20px;
+        }
+
+        .navegacion {
+            gap: 16px;
+        }
+
+        .contenedor {
+            max-width: 900px;
+        }
+    }
+
+
+    /* =========================================================
+       RESPONSIVE - MÓVIL
+       ========================================================= */
+
+    @media (max-width: 800px) {
+
+        .barra {
+            min-height: auto;
+
+            padding: 14px 18px;
+
+            flex-wrap: wrap;
+
+            gap: 14px;
+        }
+
+        .navegacion {
+            width: 100%;
+
+            justify-content: flex-start;
+
+            flex-wrap: wrap;
+
+            gap: 12px 18px;
+
+            margin-left: 0;
+        }
+
+        .correo {
+            display: none;
+        }
+
+        .contenedor {
+            padding: 30px 16px 50px;
+        }
+
+        .encabezado h1 {
+            font-size: 27px;
+        }
+
+        .resumen {
+            grid-template-columns: 1fr;
+        }
+
+        .panel {
+            padding: 22px;
+        }
+    }
+
+
+    /* =========================================================
+       MÓVILES PEQUEÑOS
+       ========================================================= */
+
+    @media (max-width: 500px) {
+
+        .barra {
+            padding: 12px 15px;
+        }
+
+        .nombre-sistema {
+            font-size: 16px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+        }
+
+        .navegacion {
+            gap: 10px 14px;
+        }
+
+        .navegacion a {
+            font-size: 13px;
+        }
+
+        .panel {
+            padding: 18px;
+            border-radius: 12px;
+        }
+
+        .resultado {
+            padding: 20px;
+        }
+    }
+</style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         BARRA SUPERIOR
+    ===================================================== -->
+
+    <header class="barra">
+
+    <a href="{% url 'inicio' %}" class="marca">
+
+        <span class="logo">$</span>
+
+        <span class="nombre-sistema">
+            Finanzas Personales
+        </span>
+
+    </a>
+
+
+    <nav class="navegacion">
+
+        <a href="{% url 'inicio' %}">
+            Inicio
+        </a>
+
+        <a href="{% url 'lista_ingresos' %}">
+            Ingresos
+        </a>
+
+        <a href="{% url 'lista_gastos' %}">
+            Gastos
+        </a>
+
+        <a href="{% url 'lista_gastos_pendientes' %}">
+            Pendientes
+        </a>
+
+        <a href="{% url 'lista_presupuestos' %}">
+            Presupuesto
+        </a>
+
+        <a href="{% url 'lista_metas_ahorro' %}">
+            Metas de ahorro
+        </a>
+
+        <a href="{% url 'historial' %}">
+            Historial
+        </a>
+
+        <a href="{% url 'consultar_decision' %}"></a>
+            Decisiones
+        </a>
+
+        <span class="correo">
+            {{ request.user.email }}
+        </span>
+
+    </nav>
+</header>
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ===================================================== -->
+
+    <main class="contenedor">
+
+
+        <!-- =================================================
+             ENCABEZADO
+        ================================================== -->
+
+        <section class="encabezado">
+
+            <h1>
+                Consulta financiera
+            </h1>
+
+            <p>
+                Realiza una pregunta sobre tu situación
+                financiera y el sistema analizará la
+                información que tienes registrada.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             RESUMEN
+        ================================================== -->
+
+        <section class="resumen">
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-titulo">
+                    Ingresos
+                </div>
+
+                <div class="resumen-monto">
+                    Bs {{ total_ingresos|floatformat:2 }}
+                </div>
+
+            </div>
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-titulo">
+                    Gastos
+                </div>
+
+                <div class="resumen-monto">
+                    Bs {{ total_gastos|floatformat:2 }}
+                </div>
+
+            </div>
+
+
+            <div class="resumen-card">
+
+                <div class="resumen-titulo">
+                    Disponible
+                </div>
+
+                <div class="resumen-monto disponible">
+                    Bs {{ dinero_disponible|floatformat:2 }}
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             PANEL DE CONSULTA
+        ================================================== -->
+
+        <section class="panel">
+
+
+            <h2>
+                ¿Qué quieres saber?
+            </h2>
+
+
+            <p class="descripcion">
+                Escribe tu pregunta de forma natural.
+                El sistema analizará tus ingresos y gastos
+                registrados para darte una recomendación.
+            </p>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- CAMPO -->
+
+                <div class="campo">
+
+                    <label for="pregunta">
+                        Escribe tu pregunta
+                    </label>
+
+
+                    <textarea
+                        id="pregunta"
+                        name="pregunta"
+                        placeholder="Ej. ¿Puedo comprar un celular de Bs 1500?"
+                        maxlength="500"
+                        required
+                    >{{ pregunta }}</textarea>
+
+
+                    <div class="ayuda">
+                        Puedes escribir la pregunta como
+                        normalmente se la harías a un asesor
+                        financiero.
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     EJEMPLOS
+                ================================================== -->
+
+                <div class="ejemplos">
+
+                    <div class="ejemplos-titulo">
+                        Ejemplos de consultas
+                    </div>
+
+
+                    <div class="ejemplos-lista">
+
+                        <span class="ejemplo">
+                            ¿Puedo comprar un celular de Bs 1500?
+                        </span>
+
+
+                        <span class="ejemplo">
+                            ¿Cuánto dinero tengo disponible?
+                        </span>
+
+
+                        <span class="ejemplo">
+                            ¿En qué estoy gastando demasiado?
+                        </span>
+
+
+                        <span class="ejemplo">
+                            ¿Cuánto puedo ahorrar?
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     BOTÓN
+                ================================================== -->
+
+                <button
+                    type="submit"
+                    class="boton"
+                >
+                    Analizar mi pregunta
+                </button>
+
+
+            </form>
+
+
+            <!-- =================================================
+                 RESULTADO
+            ================================================== -->
+
+            {% if decision %}
+
+                <div class="resultado {{ decision }}">
+
+                    <div class="resultado-cabecera">
+
+                        <div class="resultado-icono">
+
+                            {% if decision == 'verde' %}
+
+                                🟢
+
+                            {% elif decision == 'amarillo' %}
+
+                                🟡
+
+                            {% elif decision == 'rojo' %}
+
+                                🔴
+
+                            {% else %}
+
+                                ⚠️
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <h2>
+                            {{ titulo_decision }}
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+                        {{ mensaje_decision }}
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>

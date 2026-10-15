@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Completar pendiente | Finanzas Personales{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+    <h2>Completar gasto pendiente</h2>
+    <p class="card-subtitle">
+        Al confirmar, el compromiso se registrará como gasto realizado y dejará de estar pendiente.
+    </p>
+
+    <div class="card-subtitle">
+        <strong>{{ gasto_pendiente.descripcion }}</strong> — Bs {{ gasto_pendiente.monto|floatformat:2 }}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="field">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria" required>
+                <option value="">Seleccione una categoría</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}"
+                        {% if gasto_pendiente.categoria_id == categoria.id %}selected{% endif %}>
+                        {{ categoria.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <a class="btn btn-secondary" href="{% url 'lista_gastos_pendientes' %}">Cancelar</a>
+            <button class="btn btn-primary" type="submit">Confirmar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Inicio | Finanzas Personales{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div><h1>Resumen financiero</h1><p>Consulta el estado general de tus finanzas y tus movimientos recientes.</p></div>
+</div>
+<div class="summary-grid">
+    <div class="card"><div class="summary-label">Ingresos</div><div class="summary-value">Bs {{ total_ingresos|floatformat:2 }}</div></div>
+    <div class="card"><div class="summary-label">Gastos</div><div class="summary-value">Bs {{ total_gastos|floatformat:2 }}</div></div>
+    <div class="card"><div class="summary-label">Pendientes</div><div class="summary-value">Bs {{ total_gastos_pendientes|floatformat:2 }}</div></div>
+    <div class="card"><div class="summary-label">Disponible</div><div class="summary-value">Bs {{ dinero_disponible|floatformat:2 }}</div></div>
+</div>
+<div class="card">
+    <h2>{{ estado_financiero }}</h2><p class="card-subtitle">{{ mensaje_financiero }}</p>
+    <div class="actions">
+    <a class="btn btn-primary" href="{% url 'registrar_ingreso' %}">Registrar ingreso</a>
+    <a class="btn btn-secondary" href="{% url 'registrar_gasto' %}">Registrar gasto</a>
+    <a class="btn btn-secondary" href="{% url 'registrar_gasto_pendiente' %}">Registrar pendiente</a>
+    </div>
+</div>
+<div class="summary-grid">
+    <div class="card"><div class="summary-label">Ingresos del mes</div><div class="summary-value">Bs {{ ingresos_mes_total|floatformat:2 }}</div></div>
+    <div class="card"><div class="summary-label">Gastos del mes</div><div class="summary-value">Bs {{ gastos_mes_total|floatformat:2 }}</div></div>
+    <div class="card"><div class="summary-label">Pendientes del mes</div><div class="summary-value">Bs {{ total_gastos_pendientes_mes|floatformat:2 }}</div></div>
+    <div class="card"><div class="summary-label">Disponible del mes</div><div class="summary-value">Bs {{ disponible_mes|floatformat:2 }}</div></div>
+</div>
+<div class="card">
+    <h2>Presupuesto del mes</h2><p class="card-subtitle">Control de las categorías presupuestadas para {{ mes_actual }} {{ anio_actual }}.</p>
+    {% if presupuestos %}<div class="table-wrap"><table><thead><tr><th>Categoría</th><th>Presupuesto</th><th>Gastado</th><th>Disponible</th><th>Estado</th></tr></thead><tbody>{% for p in presupuestos %}<tr><td>{{ p.categoria.nombre }}</td><td>Bs {{ p.monto|floatformat:2 }}</td><td>Bs {{ p.gastado|floatformat:2 }}</td><td>Bs {{ p.restante|floatformat:2 }}</td><td>{% if p.estado_calculado == 'superado' %}<span class="badge badge-red">Superado</span>{% elif p.estado_calculado == 'precaucion' %}<span class="badge badge-yellow">Precaución</span>{% else %}<span class="badge badge-green">En control</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty">No hay presupuestos registrados para este mes.</div>{% endif %}
+</div>
+<div class="summary-grid">
+    <div class="card">
+        <h2>Meta de ahorro</h2>
+
+        {% if meta_ahorro_principal %}
+            <p class="card-subtitle">
+                {{ meta_ahorro_principal.nombre }}
+            </p>
+
+            <strong>
+                Bs {{ meta_ahorro_principal.monto_actual|floatformat:2 }}
+                /
+                Bs {{ meta_ahorro_principal.monto_objetivo|floatformat:2 }}
+            </strong>
+
+            <div class="progress" style="margin-top:10px">
+        <span style="width:{{ porcentaje_meta_ahorro }}%"></span>
+            </div>
+        {% else %}
+            <div class="empty">
+                No hay una meta de ahorro registrada.
+            </div>
+        {% endif %}
+    </div>
+    <div class="card">
+        <h2>Alertas de presupuesto</h2>
+        {% if alertas_presupuesto %}
+            {% for alerta in alertas_presupuesto %}
+                <p>
+                    <strong>{{ alerta.categoria }}</strong>:
+                    {{ alerta.mensaje }}
+                </p>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                No hay alertas de presupuesto.
+            </div>
+        {% endif %}
+    </div>
+</div>
+<div class="summary-grid">
+    <div class="card"><h2>Últimos ingresos</h2>{% if ultimos_ingresos %}<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Descripción</th><th>Monto</th></tr></thead><tbody>{% for item in ultimos_ingresos %}<tr><td>{{ item.fecha }}</td><td>{{ item.descripcion }}</td><td class="money">Bs {{ item.monto|floatformat:2 }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty">No hay ingresos registrados.</div>{% endif %}</div>
+    <div class="card"><h2>Últimos gastos</h2>{% if ultimos_gastos %}<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Descripción</th><th>Monto</th></tr></thead><tbody>{% for item in ultimos_gastos %}<tr><td>{{ item.fecha }}</td><td>{{ item.descripcion }}</td><td class="money">Bs {{ item.monto|floatformat:2 }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty">No hay gastos registrados.</div>{% endif %}</div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+FINANZAS PERSONALES - VERSION PORTABLE PARA REVISION DEL CLIENTE
+
+1. Descomprima toda la carpeta.
+2. Abra ABRIR_FINANZAS.vbs.
+3. El sistema inicia automáticamente el servidor local y abre el navegador.
+4. Ingrese con:
+   Correo: carlosrojas@gmail.com
+   Contraseña: Carlos2026!Prueba
+
+IMPORTANTE:
+- No requiere instalar Python, Django, VS Code ni ejecutar comandos manualmente.
+- Todas las dependencias necesarias están incluidas dentro del paquete.
+- No necesita conexión a Internet para instalar componentes.
+- El sistema funciona localmente en el equipo del cliente.
+- Para cerrar el sistema, abra CERRAR_FINANZAS.vbs.
+- En Historial financiero puede filtrar por mes y año, revisar ingresos, gastos y balance, imprimir y descargar el historial en PDF.
+- Extraiga TODO el ZIP antes de abrir ABRIR_FINANZAS.vbs.

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Historial financiero | Finanzas Personales{% endblock %}
+{% block extra_css %}
+<style>
+    .history-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:18px 0; }
+    .history-total { background:#fff; border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+    .history-total .label { color:var(--muted); font-size:13px; }
+    .history-total .value { margin-top:8px; font-size:24px; font-weight:700; }
+    .history-total.income .value,.history-total.balance .value { color:#15803d; }
+    .history-total.expense .value { color:#dc2626; }
+    .history-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+    .history-actions h2 { margin:0; }
+    .history-actions .actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .month-year-grid { display:grid; grid-template-columns:repeat(6,minmax(120px,1fr)); gap:12px; align-items:end; }
+    .table-note { color:var(--muted); font-size:12px; margin-top:12px; }
+    @media(max-width:900px){ .month-year-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+    @media(max-width:650px){ .history-summary{grid-template-columns:1fr}.month-year-grid{grid-template-columns:1fr 1fr}.history-total .value{font-size:21px} }
+    @media print {
+        body { background:#fff !important; color:#000 !important; }
+        .topbar,.quick-actions,.messages,.filters-card,.history-actions .actions,.no-print { display:none !important; }
+        main { max-width:none !important; padding:0 !important; }
+        .card,.history-total { box-shadow:none !important; border:1px solid #ccc !important; break-inside:avoid; }
+        .table-wrap { overflow:visible !important; }
+        table { min-width:0 !important; width:100% !important; }
+        th,td { padding:7px 5px !important; font-size:10px !important; }
+        .page-head h1 { font-size:22px !important; }
+        .history-summary { gap:8px; }
+        .history-total .value { font-size:16px; }
+        @page { size:A4 landscape; margin:12mm; }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Historial financiero</h1>
+        <p>Consulta, filtra, imprime o descarga tus movimientos por mes y año.</p>
+    </div>
+</div>
+
+<div class="card filters-card">
+    <h2>Filtros de búsqueda</h2>
+    <p class="card-subtitle">Selecciona primero el periodo. Los filtros adicionales permiten precisar los resultados.</p>
+    <form method="get" action="{% url 'historial' %}">
+        <div class="month-year-grid">
+            <div class="field"><label for="mes">Mes</label><select id="mes" name="mes">{% for numero,nombre in meses %}<option value="{{ numero }}" {% if filtros.mes == numero|stringformat:'s' %}selected{% endif %}>{{ nombre }}</option>{% endfor %}</select></div>
+            <div class="field"><label for="anio">Año</label><select id="anio" name="anio">{% for anio in anios %}<option value="{{ anio }}" {% if filtros.anio == anio|stringformat:'s' %}selected{% endif %}>{{ anio }}</option>{% endfor %}</select></div>
+            <div class="field"><label for="tipo">Tipo de movimiento</label><select id="tipo" name="tipo"><option value="">Todos</option><option value="ingreso" {% if filtros.tipo == 'ingreso' %}selected{% endif %}>Ingresos</option><option value="gasto" {% if filtros.tipo == 'gasto' %}selected{% endif %}>Gastos</option></select></div>
+            <div class="field"><label for="categoria">Categoría</label><select id="categoria" name="categoria"><option value="">Todas</option>{% for c in categorias %}<option value="{{ c.id }}" {% if filtros.categoria == c.id|stringformat:'s' %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}</select></div>
+            <div class="field"><label for="desde">Desde (opcional)</label><input id="desde" type="date" name="desde" value="{{ filtros.desde }}"></div>
+            <div class="field"><label for="hasta">Hasta (opcional)</label><input id="hasta" type="date" name="hasta" value="{{ filtros.hasta }}"></div>
+            <div class="field"><label for="minimo">Monto mínimo</label><input id="minimo" type="number" step="0.01" min="0" name="minimo" value="{{ filtros.minimo }}"></div>
+            <div class="field"><label for="maximo">Monto máximo</label><input id="maximo" type="number" step="0.01" min="0" name="maximo" value="{{ filtros.maximo }}"></div>
+            <div class="field"><label for="buscar">Descripción</label><input id="buscar" type="text" name="buscar" value="{{ filtros.buscar }}" placeholder="Buscar movimiento"></div>
+            <div class="field"><label for="ordenar">Ordenar</label><select id="ordenar" name="ordenar"><option value="recientes" {% if filtros.ordenar == 'recientes' %}selected{% endif %}>Más recientes</option><option value="antiguos" {% if filtros.ordenar == 'antiguos' %}selected{% endif %}>Más antiguos</option><option value="mayor" {% if filtros.ordenar == 'mayor' %}selected{% endif %}>Mayor monto</option><option value="menor" {% if filtros.ordenar == 'menor' %}selected{% endif %}>Menor monto</option></select></div>
+        </div>
+        <div class="filter-actions no-print" style="margin-top:16px">
+            <button class="btn btn-primary" type="submit">Aplicar filtros</button>
+            <a class="btn btn-secondary" href="{% url 'historial' %}">Limpiar filtros</a>
+        </div>
+    </form>
+</div>
+
+<div class="history-summary">
+    <div class="history-total income"><div class="label">Ingresos del periodo</div><div class="value">Bs {{ total_ingresos|floatformat:2 }}</div></div>
+    <div class="history-total expense"><div class="label">Gastos del periodo</div><div class="value">Bs {{ total_gastos|floatformat:2 }}</div></div>
+    <div class="history-total balance"><div class="label">Balance del periodo</div><div class="value">Bs {{ balance_periodo|floatformat:2 }}</div></div>
+</div>
+
+<div class="card">
+    <div class="history-actions">
+        <div><h2>Movimientos de {{ mes_nombre }} de {{ filtros.anio }}</h2><p class="card-subtitle" style="margin-top:5px">{{ movimientos|length }} movimiento(s) encontrados</p></div>
+        <div class="actions no-print">
+            <button class="btn btn-secondary" type="button" onclick="window.print()">Imprimir</button>
+            <a class="btn btn-primary" href="?{{ request.GET.urlencode }}{% if request.GET %}&{% endif %}exportar=pdf">Descargar PDF</a>
+            <a class="btn btn-secondary" href="?{{ request.GET.urlencode }}{% if request.GET %}&{% endif %}exportar=excel">Descargar Excel</a>
+        </div>
+    </div>
+    {% if movimientos %}
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Categoría</th><th>Clase</th><th style="text-align:right">Monto</th></tr></thead>
+            <tbody>{% for item in movimientos %}
+            <tr><td>{{ item.fecha|date:'d/m/Y' }}</td><td>{% if item.tipo == 'Ingreso' %}<span class="badge badge-green">Ingreso</span>{% else %}<span class="badge badge-red">Gasto</span>{% endif %}</td><td>{{ item.descripcion }}</td><td>{{ item.categoria|default:'—' }}</td><td>{{ item.tipo_detalle }}</td><td class="money" style="text-align:right">Bs {{ item.monto|floatformat:2 }}</td></tr>
+            {% endfor %}</tbody>
+        </table>
+    </div>
+    {% else %}<div class="empty">No se encontraron movimientos para el periodo y los filtros seleccionados.</div>{% endif %}
+    <p class="table-note">El PDF contiene los movimientos mostrados y el resumen de ingresos, gastos y balance del periodo seleccionado.</p>
+</div>
+{% endblock %}

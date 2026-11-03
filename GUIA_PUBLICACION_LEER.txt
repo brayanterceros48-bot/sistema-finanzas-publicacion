@@ -1,0 +1,17 @@
+FINANZAS PERSONALES - VERSION PARA GITHUB Y RENDER
+
+IMPORTANTE: este ZIP contiene el CODIGO FUENTE, no la version portatil para Windows.
+NO SUBIR la base SQLite, runtime de Python ni secretos a GitHub.
+
+1. Crea una base de datos PostgreSQL persistente en un proveedor de confianza.
+2. Crea un repositorio GitHub y sube EL CONTENIDO de esta carpeta.
+3. Crea un servicio web Python en Render vinculado al repositorio.
+4. Build command: bash build.sh
+5. Start command: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+6. Variables privadas: DATABASE_URL (URL PostgreSQL real), SECRET_KEY (aleatoria), DEBUG=False, ALLOWED_HOSTS=.onrender.com, CSRF_TRUSTED_ORIGINS=https://TU-SERVICIO.onrender.com.
+7. Configura correo SMTP real si quieres que funcione la recuperacion de contrasenas.
+8. Realiza copias de seguridad periodicas de PostgreSQL y comprueba restauraciones.
+9. Nunca uses la SQLite local en Render; si falta DATABASE_URL el inicio se detiene por seguridad.
+10. Las cuentas anteriores no se migran solas: necesitas una copia de la base de datos original.
+
+NOTA SOBRE PRUEBAS: se comprobo sintaxis Python y estructura de archivos; no fue posible ejecutar Django ni una base PostgreSQL real en este entorno. Es obligatorio probar registro, inicio de sesion, aislamiento de usuarios, exportacion PDF/Excel, recuperacion y responsive antes de compartir el enlace.

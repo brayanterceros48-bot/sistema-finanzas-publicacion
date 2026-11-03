@@ -539,7 +539,7 @@ def eliminar_meta_ahorro(request, meta_id):
 # ============================================================
 
 def _pdf_escape(value):
-    return str(value).replace('\\', '\\\\').replace('(', '\\(').replace(')', '\\)')
+    return str(value).replace('\\', '\\\\').replace('(', '\\(').replace(')', '\\)').replace('\r', ' ').replace('\n', ' ')
 
 
 def _crear_pdf_historial(movimientos, usuario, periodo, total_ingresos, total_gastos):
@@ -561,6 +561,7 @@ def _crear_pdf_historial(movimientos, usuario, periodo, total_ingresos, total_ga
     catalog_id = add_object(b'')
     pages_id = add_object(b'')
     font_id = add_object('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>')
+    bold_font_id = add_object('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>')
     page_ids = []
     for page_index, chunk in enumerate(chunks, start=1):
         cmds = []
@@ -599,7 +600,7 @@ def _crear_pdf_historial(movimientos, usuario, periodo, total_ingresos, total_ga
         text(left, 24, f'Movimientos: {len(movimientos)}   |   Página {page_index} de {len(chunks)}', 8)
         stream = '\n'.join(cmds).encode('cp1252', errors='replace')
         stream_id = add_object(b'<< /Length ' + str(len(stream)).encode() + b' >>\nstream\n' + stream + b'\nendstream')
-        page_id = add_object(f'<< /Type /Page /Parent {pages_id} 0 R /MediaBox [0 0 {page_w} {page_h}] /Resources << /Font << /F1 {font_id} 0 R /F2 {font_id} 0 R >> >> /Contents {stream_id} 0 R >>')
+        page_id = add_object(f'<< /Type /Page /Parent {pages_id} 0 R /MediaBox [0 0 {page_w} {page_h}] /Resources << /Font << /F1 {font_id} 0 R /F2 {bold_font_id} 0 R >> >> /Contents {stream_id} 0 R >>')
         page_ids.append(page_id)
     objects[catalog_id-1] = f'<< /Type /Catalog /Pages {pages_id} 0 R >>'.encode()
     objects[pages_id-1] = f'<< /Type /Pages /Kids [{" ".join(f"{pid} 0 R" for pid in page_ids)}] /Count {len(page_ids)} >>'.encode()

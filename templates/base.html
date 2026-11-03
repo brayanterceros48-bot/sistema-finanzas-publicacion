@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Finanzas Personales{% endblock %}</title>
     <style>
-        :root { --primary:#166534; --primary-dark:#14532d; --bg:#f6f8fb; --card:#fff; --text:#172033; --muted:#64748b; --border:#e2e8f0; --danger:#b91c1c; --warning:#a16207; }
+        :root { --primary:#168653; --primary-dark:#08783f; --bg:#f4f7f9; --card:#fff; --text:#172033; --muted:#64748b; --border:#e2e8f0; --danger:#b91c1c; --warning:#a16207; }
         * { box-sizing:border-box; }
         body { margin:0; font-family:Arial,Helvetica,sans-serif; background:var(--bg); color:var(--text); }
         a { color:inherit; }
@@ -20,6 +21,7 @@
     flex-wrap: nowrap;
 }
         .nav a { text-decoration:none; color:#475569; padding:10px 12px; border-radius:8px; font-size:14px; }
+        .nav a:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
         .nav a:hover { background:#f1f5f9; color:var(--text); }
         .user-area {
     display: flex;
@@ -76,7 +78,26 @@
         .empty { text-align:center; padding:34px 15px; color:var(--muted); }
         .progress { height:8px; background:#e2e8f0; border-radius:99px; overflow:hidden; }
         .progress > span { display:block; height:100%; background:var(--primary); }
+        .menu-toggle { display:none; background:#fff; border:1px solid var(--border); border-radius:8px; padding:9px 12px; color:var(--primary-dark); font-weight:700; cursor:pointer; }
+        .brand { min-width:0; }
+        .brand span { overflow:hidden; text-overflow:ellipsis; }
+        img { max-width:100%; }
+        .card, .field, .form-grid > *, .summary-grid > * { min-width:0; }
+        input,select,textarea { max-width:100%; font-size:16px; }
+        .table-wrap { max-width:100%; -webkit-overflow-scrolling:touch; }
         @media(max-width:1000px){ .filter-grid{grid-template-columns:repeat(3,1fr)} .summary-grid{grid-template-columns:repeat(2,1fr)} .topbar-inner{align-items:flex-start;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}.nav{order:3;flex-basis:100%} }
+        @media(max-width:800px) {
+            .topbar-inner { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:12px 16px; }
+            .brand { font-size:16px; flex:1; }
+            .menu-toggle { display:block; order:2; }
+            .nav { display:none; order:4; flex:0 0 100%; width:100%; flex-direction:column; align-items:stretch; gap:2px; border-top:1px solid var(--border); padding-top:10px; }
+            .nav.is-open { display:flex; }
+            .nav a { display:block; padding:12px; font-size:15px; }
+            .user-area { order:3; margin-left:0; flex:0 0 100%; justify-content:space-between; gap:8px; overflow-wrap:anywhere; }
+            .user-area span { min-width:0; overflow-wrap:anywhere; }
+            .quick-actions { overflow-x:auto; }
+            .page-head { flex-direction:column; }
+        }
         @media(max-width:650px){ main{padding:20px 16px}.quick-actions{padding:12px 16px 0}.messages{padding:12px 16px 0}.page-head{flex-direction:column}.filter-grid,.form-grid,.summary-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.user-area{margin-left:auto}.nav a{padding:8px 9px}.topbar-inner{padding-left:16px;padding-right:16px} }
     </style>
     {% block extra_css %}{% endblock %}
@@ -84,9 +105,10 @@
 <body>
 <header class="topbar">
     <div class="topbar-inner">
-        <a class="brand" href="{% url 'inicio' %}">Finanzas Personales</a>
+        <a class="brand" href="{% url 'inicio' %}" style="display:flex;align-items:center;gap:10px"><img src="{% static 'img/logo.svg' %}" alt="Logo" style="width:38px;height:38px;object-fit:contain;border-radius:8px"><span>Finanzas Personales</span></a>
         {% if user.is_authenticated %}
-            <nav class="nav">
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal" onclick="toggleMenu(this)">☰ Menú</button>
+            <nav class="nav" id="menu-principal" aria-label="Navegación principal">
                 <a href="{% url 'inicio' %}">Inicio</a>
                 <a href="{% url 'lista_ingresos' %}">Ingresos</a>
                 <a href="{% url 'lista_gastos' %}">Gastos</a>
@@ -121,5 +143,14 @@
 </div>
 {% endif %}
 <main>{% block content %}{% endblock %}</main>
+<script>
+function toggleMenu(button) {
+    const menu = document.getElementById('menu-principal');
+    if (!menu) return;
+    const open = menu.classList.toggle('is-open');
+    button.setAttribute('aria-expanded', String(open));
+    button.textContent = open ? '✕ Cerrar' : '☰ Menú';
+}
+</script>
 </body>
 </html>

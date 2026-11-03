@@ -1,0 +1,21 @@
+PERSONALIZACIÓN DE FINANZAS PERSONALES
+====================================
+
+1. Extrae la carpeta FINANZAS_PERSONALES_CLIENTE del ZIP.
+2. Ejecuta ABRIR_FINANZAS.vbs para iniciar el sistema.
+3. Inicia sesión con tu cuenta.
+4. En el menú superior, entra en “Personalizar”.
+5. Cambia el nombre, los colores o selecciona un logo PNG, JPG o WEBP (máximo 2 MB).
+6. Pulsa “Guardar personalización”. Los cambios se aplican al volver a cargar las páginas.
+
+La configuración visual se guarda en configuracion_visual.json y el logo cargado
+se almacena en static/img. No se agregan tablas ni se modifican los datos de
+usuarios, ingresos, gastos, presupuestos o decisiones.
+
+Para cerrar el servidor, utiliza CERRAR_FINANZAS.vbs.
+Los registros de inicio se guardan en cliente.log y servidor.log.
+
+IMPORTANTE:
+- No abras los archivos HTML directamente; inicia el sistema con el lanzador.
+- No reemplaces ni elimines runtime, db.sqlite3, config o apps.
+- Esta entrega es una copia local. No modifica GitHub ni Render.

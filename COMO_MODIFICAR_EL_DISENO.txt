@@ -1,0 +1,16 @@
+CAMBIAR EL DISENO DESDE EL CODIGO - FINANZAS PERSONALES
+
+1. Abrir la carpeta FINANZAS_PERSONALES_CLIENTE en Visual Studio Code.
+2. Editar templates/base.html para cambiar el nombre, los colores y el estilo.
+   - Nombre: buscar el texto <span>Finanzas Personales</span>
+   - Colores: buscar :root { --primary:#166534; --primary-dark:#14532d; ... }
+   - Logo: reemplazar static/img/logo.svg (conservar ese nombre).
+3. Guardar con Ctrl+S. Abrir el sistema con ABRIR_FINANZAS.vbs.
+4. Actualizar Chrome con Ctrl+F5 para ver los cambios.
+
+IMPORTANTE: NO abrir templates/base.html con doble clic. Es una plantilla Django.
+Si el puerto 8000 esta ocupado, cerrar la instancia anterior con su lanzador de cierre.
+Esta version no incluye el apartado Personalizar.
+No se han alterado los modulos de finanzas, presupuesto ni decisiones ni la base de datos.
+Para cambiar el estilo del login, editar templates/usuarios/login.html (tiene CSS propio).
+No subir esta copia a GitHub/Render sin revisar antes su configuracion de despliegue.

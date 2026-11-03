@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('inicio/', views.inicio, name='inicio'),
 
+
     path('recuperar-password/', views.recuperar_password, name='recuperar_password'),
 
     path(
